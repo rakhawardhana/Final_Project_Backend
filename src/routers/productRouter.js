@@ -109,7 +109,7 @@ router.get('/products', (req, res) => {
 
     conn.query(sql, (err, result) => {
         if(err) return res.send(err)
-        console.log(result)
+        // console.log(result)
         res.send(result)
     })
 })

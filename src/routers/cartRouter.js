@@ -28,13 +28,13 @@ router.post('/cart_product',(req,res)=>{
     //     quantity : data.quantity,
         
     // }
-    console.log(sql)
+    // console.log(sql)
     conn.query(sql, (err,results)=>{
         if(err){
             return res.send(err)
         }
     
-        console.log(results)
+        // console.log(results)
         if(results[0].quantity > data.quantity) {
             conn.query(sql3, (err, results3) =>{
                 if(err) {
@@ -67,23 +67,24 @@ router.post('/cart_product',(req,res)=>{
 
 router.get('/cart_product/:id', (req, res)=> {
     const sql = `SELECT * FROM cart_product WHERE product_id = ${req.params.id}`
-
+    console.log(sql)
     conn.query(sql, (err,results)=>{
         if(err){
             return res.send(err)
         }
         
         res.send(results[0])
+        console.log(results)
     })
 })
 
 
 
 router.patch('/cart_product/:id',(req,res)=>{  
-
+    const data = req.body
     const sql = `SELECT * FROM products WHERE id = ${req.params.id}`
     const sql2 = `UPDATE cart_product SET quantity = ${data.quantity} WHERE product_id = ${req.params.id}`
-    const data = req.body
+    
 
     conn.query(sql, (err,results)=>{
         if(err){
@@ -100,7 +101,7 @@ router.patch('/cart_product/:id',(req,res)=>{
             })
         } else {
            
-            return res.send(`Dilarang melebihi : ${results[0].quantity}`)
+            return res.send(`DILARANG INPUT MELEBIHI STOCK`)
         }     
         
 
