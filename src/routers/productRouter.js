@@ -101,12 +101,15 @@ router.get('/products/:id', (req, res) => {
 
 // get all product
 router.get('/products', (req, res) => {
-    const sql = `select * from products join category on products.category_id = category.id`
+    // const sql = `select * from products join category on products.category_id = category.id`
+    const sql = `select products.id, name_product, description, price, quantity, avatar, category_product
+                    from products 
+                    join category on products.category_id = category.id;`
     
 
     conn.query(sql, (err, result) => {
         if(err) return res.send(err)
-
+        console.log(result)
         res.send(result)
     })
 })

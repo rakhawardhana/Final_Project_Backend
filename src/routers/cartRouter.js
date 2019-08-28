@@ -28,13 +28,13 @@ router.post('/cart_product',(req,res)=>{
     //     quantity : data.quantity,
         
     // }
-
+    console.log(sql)
     conn.query(sql, (err,results)=>{
         if(err){
             return res.send(err)
         }
     
-
+        console.log(results)
         if(results[0].quantity > data.quantity) {
             conn.query(sql3, (err, results3) =>{
                 if(err) {
@@ -57,10 +57,26 @@ router.post('/cart_product',(req,res)=>{
             
         } else {
            
-            return res.send(`Dilarang melebihi : ${results[0].quantity}`)
+            
+            // return res.badRequest(
+            //     'Transaction limit exceeded. Please try again with an amount less than ${results[0].quantity}.')
+            res.status(400).send('DILARANG MELEBIHI STOCK')
         }     
     })
 })
+
+router.get('/cart_product/:id', (req, res)=> {
+    const sql = `SELECT * FROM cart_product WHERE product_id = ${req.params.id}`
+
+    conn.query(sql, (err,results)=>{
+        if(err){
+            return res.send(err)
+        }
+        
+        res.send(results[0])
+    })
+})
+
 
 
 router.patch('/cart_product/:id',(req,res)=>{  
@@ -73,7 +89,8 @@ router.patch('/cart_product/:id',(req,res)=>{
         if(err){
             return res.send(err)
         }
-
+        // cek ketersediaan produk, kalau lebih besar quantity produk ya eksekusi, kalau enggak ya kasih notif
+        // data.quantity di query ini merupakan hasil penjumlahan antara quantity yang dimasukin di cart_product ama yang ditambah
         if(results[0].quantity > data.quantity) {
             conn.query(sql2,(err,results2)=>{
                 if(err){
