@@ -5,7 +5,7 @@ const powrt = require('./config/port')
 const userRouter = require('./routers/userRouter')
 const productRouter = require('./routers/productRouter')
 const cartRouter = require('./routers/cartRouter')
-
+const adminRouter = require('./routers/adminRouter')
 const app = express()
 const port = powrt
 
@@ -16,6 +16,7 @@ app.use(cors())
 app.use(userRouter)
 app.use(productRouter)
 app.use(cartRouter)
+app.use(adminRouter)
 //app.use(taskRouter)
 
 app.get('/', (req, res) => {

@@ -102,7 +102,7 @@ router.get('/products/:id', (req, res) => {
 // get all product
 router.get('/products', (req, res) => {
     // const sql = `select * from products join category on products.category_id = category.id`
-    const sql = `select products.id, name_product, description, price, quantity, avatar, category_product
+    const sql = `select products.id, name_product, description, price, quantity, avatar, category_product, category.id as category_id
                     from products 
                     join category on products.category_id = category.id;`
     
@@ -128,12 +128,13 @@ router.patch('/products/:product_id', upstore.single('avatar'),(req,res)=>{
         quantity : data.quantity,
         avatar : req.file.filename
     }
+    console.log(products)
 
     conn.query(sql,products,(err,result)=>{
         if(err){
             return res.send(err).status(500)
         }
-
+        console.log(products)
         res.send(result)
         
     })
