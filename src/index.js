@@ -6,6 +6,7 @@ const userRouter = require('./routers/userRouter')
 const productRouter = require('./routers/productRouter')
 const cartRouter = require('./routers/cartRouter')
 const adminRouter = require('./routers/adminRouter')
+const checkoutRouter = require('./routers/checkoutRouter')
 const app = express()
 const port = powrt
 
@@ -17,7 +18,7 @@ app.use(userRouter)
 app.use(productRouter)
 app.use(cartRouter)
 app.use(adminRouter)
-//app.use(taskRouter)
+app.use(checkoutRouter)
 
 app.get('/', (req, res) => {
     res.send('Selamat Datang Brok!!')
