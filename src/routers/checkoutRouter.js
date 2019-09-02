@@ -93,6 +93,7 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
     })
 
 
+
     router.get('/checkout/user/:user_id', (req, res) => {
         const sql = `select * from checkout`
         conn.query(sql, (err, result) => {
@@ -110,6 +111,8 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
 
     )
 
+
+    // GET AVATAR BUKTI TRANSAKSI
     router.get('/checkout/transfer_avatar/:photo', (req, res) => {
     
         const options = {
@@ -126,6 +129,9 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
     
     })
 
+
+
+    // VERIFIED CHECKOUT AND BUKTI TRANSAKSI
     router.patch('/checkout/:id', (req, res) => {
         
         const data = req.body

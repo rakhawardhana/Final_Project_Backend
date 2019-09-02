@@ -21,7 +21,7 @@ const router = require('express').Router()
     // nanti pas di post, di front end di get  
 
 
-
+// untuk dapetin cart_id pas checkout
 router.get('/cart/user/:user_id', (req, res) => {
     const user_id = req.params.user_id
     const sql = `SELECT * from cart where users_id=${user_id} and is_checkout=${false}`
@@ -33,6 +33,9 @@ router.get('/cart/user/:user_id', (req, res) => {
     })
 })
 
+
+
+// ADD TO CART, ketika di cart_product belum ada product_idnya (cartnya belom dibuang)
 router.post('/cart_product',(req,res)=>{
 
     const data = req.body
@@ -82,8 +85,14 @@ router.post('/cart_product',(req,res)=>{
     })
 })
 
+// dimodifikasi untuk yang isproductnya false
+// get cart ini hanya nampilin cart_product dengan id cart yang belom verified atau dibuang
+
 router.get('/cart_product/:id', (req, res)=> {
-    const sql = `SELECT * FROM cart_product WHERE product_id = ${req.params.id}`
+    const sql = `SELECT * FROM cart_product 
+                join cart on cart_product.cart_id = cart.id
+                WHERE product_id = ${req.params.id}
+                and is_checkout = ${false}`
     console.log(sql)
     conn.query(sql, (err,results)=>{
         if(err){
@@ -91,12 +100,12 @@ router.get('/cart_product/:id', (req, res)=> {
         }
         
         res.send(results[0])
-        console.log(results)
+        //console.log(results)
     })
 })
 
 
-
+// Kalau product_idnya udah ada, dia tinggal di patch gak perlu di post ulang (alias langsung ditambah)
 router.patch('/cart_product/:id',(req,res)=>{  
     const data = req.body
     const sql = `SELECT * FROM products WHERE id = ${req.params.id}`
@@ -127,12 +136,15 @@ router.patch('/cart_product/:id',(req,res)=>{
 })
 
 // get all cart
+// dimodifikasi untuk get yang is_checkout = false
+// ditampilkan di front end bagian cart.js
 router.get('/cart_product', (req, res)=> {
     const sql = `select product_id, cart_product.quantity, name_product, description, price, avatar, users_id, category_product
                     from cart_product
                     join products on cart_product.product_id = products.id
                     join cart on cart_product.cart_id = cart.id
-                    join category on products.category_id = category.id`
+                    join category on products.category_id = category.id
+                    where is_checkout = false`
     console.log(sql)
     conn.query(sql, (err,results)=>{
         if(err){
@@ -144,6 +156,9 @@ router.get('/cart_product', (req, res)=> {
     })
 })
 
+
+
+// karena transaksi akan dihistory kemungkinan besar tidak terpakai
 router.delete('/cart_product/:id',(req,res)=>{
     const sql = `DELETE FROM cart_product WHERE product_id = ${req.params.id}`
 
