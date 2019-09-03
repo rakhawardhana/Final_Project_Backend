@@ -93,7 +93,6 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
     })
 
 
-
     router.get('/checkout/user/:user_id', (req, res) => {
         const sql = `select * from checkout`
         conn.query(sql, (err, result) => {
@@ -108,7 +107,40 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
                 console.log(result)
         })
     }
+    )
 
+    router.get('/checkout/:cart_id', (req, res) => {
+        const sql = `select * from checkout where cart_id = ${req.params.cart_id}`
+        conn.query(sql, (err, result) => {
+            if(err) return res.send(err)
+            console.log(err)
+            
+           
+                res.send(result[0])
+                console.log(result)
+        })
+    }
+    )
+
+    // get all checkout to be verified
+    router.get('/checkout/', (req, res) => {
+        const sql = `select checkout.id, price_sum, transfer_avatar, verified, checkout.created_at, checkout.updated_at, product_id, name_product, cart_product.quantity
+                    from checkout 
+                    join cart on cart.id = checkout.cart_id
+                    join cart_product on cart_product.cart_id = checkout.cart_id
+                    join products on products.id = cart_product.product_id`
+        conn.query(sql, (err, result) => {
+            if(err) return res.send(err)
+            console.log(err)
+            
+            // conn.query(sql2, result.insertId, (err, result2) => {
+            //     if(err) return res.send(err).status(500)
+    
+                
+                res.send(result)
+                console.log(result)
+        })
+    }
     )
 
 
@@ -119,7 +151,6 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
             root: transferdir
         }
     
-        
         const data = req.params.photo
     
         res.sendFile(data, options, function(err){
