@@ -170,6 +170,41 @@ router.delete('/cart_product/:id',(req,res)=>{
     })
 })
 
+// MAKE NEW CART 
+router.patch('/cart/:cart_id', (req, res) => {
+    
+    const data = req.body
+    const sql1 = `UPDATE CART SET ? WHERE id = ${req.params.cart_id}`
+    const sql2 = `INSERT INTO cart set ?`
+    
+    
+   
+    conn.query(sql1, {is_checkout: true}, (err, result) => {
+            if (err) return res.send(err).status(500)
+           
+           
+            conn.query(sql2, {users_id : data.users_id}, (err, result2) => {
+                if (err) return res.send(err).status(500)
+                
+                res.send(result2)
+                console.log(err)
+                
+                // conn.query(sql2, result.insertId, (err, result2) => {
+                //     if(err) return res.send(err).status(500)
+        
+                //     res.send(result2[0])
+                //     console.log(err)
+            // })
+            })
+            
+        })
+
+          
+    
+
+    })
+
+
 
 // patch cart_product into verified
 // router.patch('/cart_productverified/:id',(req,res)=>{  

@@ -47,13 +47,13 @@ const upstore = multer (
 
 
 
-
+// post and upload ulang bukti transfer
 router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
     const sql = `INSERT INTO checkout SET ?`
     const sql2 = `SELECT * FROM checkout WHERE id = ?`
     const data = req.body
-    const sqlUpdateOldCart = `UPDATE CART SET ? WHERE id = ${data.cart_id}`
-    const sqlCreateCart = `INSERT INTO cart set ?`
+    // const sqlUpdateOldCart = `UPDATE CART SET ? WHERE id = ${data.cart_id}`
+    // const sqlCreateCart = `INSERT INTO cart set ?`
     // console.log(data)
     
     const checkout = {
@@ -68,30 +68,18 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
         console.log(err)
         console.log(result)
 
-        conn.query(sqlUpdateOldCart, {
-            is_checkout: true
-        }, (err) => {
-            if (err) return res.send(err).status(500)
-            conn.query(sqlCreateCart, {
-                users_id : data.users_id
-            }, (err) => {
-                if (err) return res.send(err).status(500)
-                conn.query(sql2, result.insertId, (err, result2) => {
-                    if(err) return res.send(err).status(500)
+       
+        conn.query(sql2, result.insertId, (err, result2) => {
+            if(err) return res.send(err).status(500)
         
                     
-                    res.send(result2[0])
-                    console.log(err)
-                })
-            })
-            
+            res.send(result2[0])
+            console.log(err)
         })
-
-          
+            
     })
-
-    })
-
+            
+})
 
     router.get('/checkout/user/:user_id', (req, res) => {
         const sql = `select * from checkout`
@@ -109,8 +97,9 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
     }
     )
 
-    router.get('/checkout/:cart_id', (req, res) => {
-        const sql = `select * from checkout where cart_id = ${req.params.cart_id}`
+    // untuk get checkout mana yang transaksinya berhasil
+    router.get('/checkout/accept/:cart_id', (req, res) => {
+        const sql = `select * from checkout where cart_id = ${req.params.cart_id} order by updated_at DESC LIMIT 1`
         conn.query(sql, (err, result) => {
             if(err) return res.send(err)
             console.log(err)
@@ -122,6 +111,33 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
     }
     )
 
+    // untuk get checkout mana yang transaksinya belum atau gagal 
+    // gajadi dipake
+    router.get('/checkout/checkno/:cart_id', (req, res) => {
+        const sql = `select * from checkout where cart_id = ${req.params.cart_id} and verified != "yes"`
+        conn.query(sql, (err, result) => {
+            if(err) return res.send(err)
+            console.log(err)
+            
+           
+                res.send(result[0])
+                console.log(result)
+        })
+    }
+    )
+    // gajadi dipake
+    router.get('/checkout/checknull/:cart_id', (req, res) => {
+        const sql = `select * from checkout where cart_id = ${req.params.cart_id} and verified is null`
+        conn.query(sql, (err, result) => {
+            if(err) return res.send(err)
+            console.log(err)
+            
+           
+                res.send(result[0])
+                console.log(result)
+        })
+    }
+    )
     // get all checkout to be verified
     router.get('/checkout/', (req, res) => {
         const sql = `select checkout.id, price_sum, transfer_avatar, verified, checkout.created_at, checkout.updated_at, product_id, name_product, cart_product.quantity
@@ -163,6 +179,7 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
 
 
     // VERIFIED CHECKOUT AND BUKTI TRANSAKSI
+
     router.patch('/checkout/:id', (req, res) => {
         
         const data = req.body
@@ -182,9 +199,7 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
         conn.query(sql, checkout, (err, result) => {
             if(err) return res.send(err)
             console.log(err)
-            return res.json({
-                ok: true
-            })
+            return res.send(result)
             // conn.query(sql2, result.insertId, (err, result2) => {
             //     if(err) return res.send(err).status(500)
             // catatan, patch cart_product V
@@ -208,6 +223,48 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
 
         // setelah checkout, kalau dia mau belanja, dibikin query buat nge add cart dengan iduser yang sama 
 
+
+
+        // decline
+        router.patch('/checkout/decline/:id', (req, res) => {
+        
+            const data = req.body
+           
+            //const checkout_verified0 = false
+            const sql = `UPDATE checkout SET ? WHERE id = ${req.params.id}`
+            // console.log(data)
+            //const sql1 = `select * from cart where users_id = ${data.id} and checkout verified = ${chekout_verified0} `
+            // const sql2 = `Update cart SET checkout_verified = ${checkout_verified} where id = ${data.cart_id}`
+            
+    
+            const checkout = {
+                admin_id : data.admin_id,
+                verified: data.verified
+            }
+            
+            conn.query(sql, checkout, (err, result) => {
+                if(err) return res.send(err)
+                console.log(err)
+                return res.send(result)
+                // conn.query(sql2, result.insertId, (err, result2) => {
+                //     if(err) return res.send(err).status(500)
+                // catatan, patch cart_product V
+                //console.log(result[0].cart_id)
+                
+                // conn.query(sql2, (err, result2) => {
+                //     if(err) return res.send(err)
+                //     console.log(err)
+                    
+                //      res.send(result2[0])
+    
+                //     console.log(result2[0])
+    
+                // }) 
+                   
+                //})  
+            })
+        
+            })
         module.exports = router
 
         // disini aja nanti 

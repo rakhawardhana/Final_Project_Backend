@@ -161,8 +161,10 @@ router.delete('/products/:id',(req,res)=>{
     const sql = `DELETE FROM products WHERE id = ${req.params.id}`
 
     conn.query(sql,(err,results)=>{
+        console.log(err)
         if(err){
             return res.send(err)
+            
         }
         res.send(results)
     })
