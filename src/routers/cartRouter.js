@@ -54,8 +54,9 @@ router.post('/cart_product',(req,res)=>{
             return res.send(err)
         }
     
-        // console.log(results)
-        if(results[0].quantity > data.quantity) {
+        console.log(results[0].quantity)
+        console.log(data.quantity)
+        if(results[0].quantity >= data.quantity) {
             conn.query(sql3, (err, results3) =>{
                 if(err) {
                     return res.send(err)
@@ -118,7 +119,7 @@ router.patch('/cart_product/:id',(req,res)=>{
         }
         // cek ketersediaan produk, kalau lebih besar quantity produk ya eksekusi, kalau enggak ya kasih notif
         // data.quantity di query ini merupakan hasil penjumlahan antara quantity yang dimasukin di cart_product ama yang ditambah
-        if(results[0].quantity > data.quantity) {
+        if(results[0].quantity >= data.quantity) {
             conn.query(sql2,(err,results2)=>{
                 if(err){
                     return res.send(err)

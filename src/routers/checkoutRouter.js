@@ -144,7 +144,8 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
                     from checkout 
                     join cart on cart.id = checkout.cart_id
                     join cart_product on cart_product.cart_id = checkout.cart_id
-                    join products on products.id = cart_product.product_id`
+                    join products on products.id = cart_product.product_id
+                    order by verified DESC`
         conn.query(sql, (err, result) => {
             if(err) return res.send(err)
             console.log(err)
