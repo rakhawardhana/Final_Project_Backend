@@ -140,7 +140,7 @@ router.post('/checkout', upstore.single('transfer_avatar'), (req, res) => {
     )
     // get all checkout to be verified
     router.get('/checkout/', (req, res) => {
-        const sql = `select checkout.id, price_sum, transfer_avatar, verified, checkout.created_at, checkout.updated_at, product_id, name_product, cart_product.quantity
+        const sql = `select checkout.id, price_sum, transfer_avatar, verified, checkout.created_at, checkout.updated_at, product_id, name_product, price, cart_product.quantity
                     from checkout 
                     join cart on cart.id = checkout.cart_id
                     join cart_product on cart_product.cart_id = checkout.cart_id

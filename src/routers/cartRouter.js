@@ -42,13 +42,7 @@ router.post('/cart_product',(req,res)=>{
     const sql = `SELECT * FROM products WHERE id = ${data.product_id}`
     const sql2 = `INSERT INTO cart_product SET ?`
     const sql3 = `select * from cart where users_id = ${data.id} and is_checkout=${false}`
-    // const cart_productdata = {
-        
-    //     product_id : data.product_id,
-    //     quantity : data.quantity,
-        
-    // }
-    // console.log(sql)
+    
     conn.query(sql, (err,results)=>{
         if(err){
             return res.send(err)
@@ -89,11 +83,18 @@ router.post('/cart_product',(req,res)=>{
 // dimodifikasi untuk yang isproductnya false
 // get cart ini hanya nampilin cart_product dengan id cart yang belom verified atau dibuang
 
-router.get('/cart_product/:id', (req, res)=> {
+router.get('/cart_product/:id/:userId', (req, res)=> {
     const sql = `SELECT * FROM cart_product 
                 join cart on cart_product.cart_id = cart.id
-                WHERE product_id = ${req.params.id}
+                WHERE product_id = ${req.params.id} AND users_id = ${req.params.userId}
                 and is_checkout = ${false}`
+
+    // const response = Cart.findOne({
+    //     where: {
+    //         productId: ....,
+    //         userId: //
+    //     }
+    // })
     console.log(sql)
     conn.query(sql, (err,results)=>{
         if(err){

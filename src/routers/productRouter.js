@@ -9,7 +9,6 @@ const rootdir = path.join(__dirname , '/../..' )
 const productdir = path.join (rootdir , '/upload/avatar')
 
 
-
 const folder = multer.diskStorage(
     {
         destination: function(req,file,cb){
@@ -38,6 +37,9 @@ const upstore = multer (
         }
     }
 )
+
+
+
 
 // ADD PRODUCT
 router.post('/products', upstore.single('avatar'), (req, res) => {
@@ -96,6 +98,9 @@ router.get('/products/:id', (req, res) => {
         res.send(result[0])
     })
 })
+
+
+// gimana caranya dia bisa nge-get cart_id yang harusnya beda, 
 
 
 

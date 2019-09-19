@@ -28,7 +28,7 @@ const upstore = multer (
     {
         storage : folder,
         limits : {
-            fileSize : 2000000 //bytes
+            fileSize : 20000000 //bytes
         },
         fileFilter(req,file,cb){
             let photo = file.originalname.match(/\.(jpg|jpeg|png|gif)$/)
@@ -41,6 +41,7 @@ const upstore = multer (
         }
     }
 )
+
 
 
 
@@ -103,11 +104,23 @@ router.post('/users/auth', (req,res) => {
                 if (!result2) return res.send(`Invalid, cant found data, please register`)
 
                 else {
-                    bcrypt.compare(data.password, result2[0].password)
-                    .then(val => {
-                        if (val === false) return res.send(`password are incorrect`)
-                        res.send(result2[0])
+                    bcrypt.compare(data.password, result2[0].password, (err, data ) => {
+                        if(data) {
+                            res.send(result2[0])
+                        } 
+                        // res.send(data)
+                        console.log(err)
+                        console.log(data)
                     })
+                    // .then(val => {
+                    //     if (val === false) return res.send(`password are incorrect`)
+                    //     res.send(result2[0])
+                    // })
+                    
+                    // callback, kalau callback belum tentu dia bisa di async await belum tentu bisa di promise
+                    // kalau promise udah bisa di async awat
+                    // kalau ada async await, udah pasti bisa callback, udah bisa promise. 
+
                 }
             }
            
